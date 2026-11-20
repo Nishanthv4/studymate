@@ -1,0 +1,50 @@
+STUDYMATE V6 — INSTALL / UPGRADE NOTES
+
+This is an overlay upgrade for your existing React + Vite project. It is not a new project.
+
+Your project folder:
+C:\Users\nisha\College\student-study-planner
+
+BEFORE YOU START
+1. Close any editor tab for the source files, or save your work.
+2. Make a backup copy of the current src\App.jsx, src\App.css, and server.js.
+3. Download and extract this ZIP.
+
+COPY THESE FILES INTO YOUR EXISTING PROJECT (replace matching files):
+- src\App.jsx
+- src\App.css
+- server.js
+- index.html (optional; only app metadata)
+
+The ZIP also includes src\index.css for reference, but you do not need to replace it.
+Do NOT replace package.json, src\main.jsx, or node_modules. No new npm packages are required.
+
+RESTART THE BACKEND
+1. In the terminal running node server.js, press Ctrl+C.
+2. Run:
+   cd "C:\Users\nisha\College\student-study-planner"
+   node server.js
+3. Keep the Vite terminal running with npm run dev. If Vite is stopped, start it from another terminal in the project folder with:
+   npm run dev
+4. Refresh the URL Vite prints, normally http://localhost:5173/.
+
+MODEL
+The backend defaults to llama3.2:1b. Check with:
+   ollama list
+If needed, run:
+   ollama pull llama3.2:1b
+If you intentionally want 3B, set $env:OLLAMA_MODEL = "llama3.2:3b" in the same PowerShell window before starting node server.js.
+
+NEW IN V6
+- Local device date/day indicator; current weekday is highlighted in the class timetable. The browser sends its local date, weekday, and time to the backend so the AI can start Day 1 today and avoid suggesting earlier times.
+- Exam/assignment calendar, selected-date view, and countdowns (Due today / tomorrow / days remaining).
+- Upcoming calendar entries are passed to the model when generating or refining plans.
+- Smart rescheduler moves overdue, unchecked tasks into future slots. It respects valid saved class times, recognized existing study blocks, the daily study-time limit, and matching future deadlines in the exam calendar or dates explicitly written in the deadlines field (for example, `Mathematics internal — 22 Oct — Unit 1` or `Assignment — 2026-10-22`). It adds a small buffer between class/study blocks and checks up to 60 days ahead. Tasks that cannot all fit remain in the original plan instead of being silently removed.
+- Full JSON backup and restore includes saved plans, completion progress, weekly timetable, exam calendar, active plan, and current form draft.
+- Safer restore validation, malformed local-storage normalization, validation of stored dates/times, and stronger local API error messages.
+- Duplicate Day N headings emitted by a small model are merged into one visual day card.
+
+DATA / LIMITATIONS
+Data saves in the current browser's localStorage. Use Backup & restore before clearing browser data or changing browsers. Restore replaces current data and asks for confirmation.
+AI suggestions are not guaranteed to be perfect. The deterministic rescheduler prevents conflicts with valid times recorded in the class timetable, known clocked study blocks, and applicable future dates it can identify. It can recognize dates like `22 Oct`, `Oct 22`, `22/10/2026`, and `2026-10-22` in the deadlines field, but it cannot infer class times you have not entered or safely interpret ambiguous prose. Add important exams as calendar entries for the most reliable countdowns and scheduling.
+No login page is included. AI inference stays local through Ollama; do not expose the local Express API to the public internet.

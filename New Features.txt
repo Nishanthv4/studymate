@@ -1,0 +1,12 @@
+we need set our own time
+
+insipirational quotes
+
+we need to select subjects in focus
+
+new to improve the interface of time table
+
+ node server.js
+
+ npm run dev
+ ollama run llama3.2:3b
